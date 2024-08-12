@@ -9,7 +9,7 @@ env:
   TF_CLOUD_ORGANIZATION: "TED_EVAL"
   TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
   TF_WORKSPACE: "terraform-aws-cicd-demo"
-  CONFIG_DIRECTORY: "./"
+  CONFIG_DIRECTORY: "./src"
 
 jobs:
   terraform:
