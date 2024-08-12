@@ -1,4 +1,4 @@
-name: "Terraform"
+name: "Terraform Apply"
 
 on:
   push:
@@ -10,33 +10,44 @@ env:
   TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
   TF_WORKSPACE: "terraform-aws-cicd-demo"
   CONFIG_DIRECTORY: "./"
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
 jobs:
   terraform:
-    name: "Terraform"
+    if: github.repository != 'n920094/AWS_Terraform_CI_CD_demo'
+    name: "Terraform Apply"
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: src
+    permissions:
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
+      - name: Upload Configuration
+        uses: n920094/AWS_Terraform_CI_CD_demo/actions/upload-configuration@v1.0.0
+        id: apply-upload
         with:
-          terraform_version: 1.9.1
-          terraform_wrapper: false
+          workspace: ${{ env.TF_WORKSPACE }}
+          directory: ${{ env.CONFIG_DIRECTORY }}
 
-      - name: Terraform Format
-        id: fmt
-        run: terraform fmt -check
+      - name: Create Plan Run
+        uses: n920094/AWS_Terraform_CI_CD_demo/actions/create-run@v1.0.0
+        id: plan-run
+        with:
+          workspace: ${{ env.TF_WORKSPACE }}
+          configuration_version: ${{ steps.plan-upload.outputs.configuration_version_id }}
+          plan_only: true
 
-      - name: Terraform Plan
-        id: plan
-        run: terraform plan -no-color
+      - name: Create Apply Run
+        uses: n920094/AWS_Terraform_CI_CD_demo/actions/create-run@v1.0.0
+        id: apply-run
+        with:
+          workspace: ${{ env.TF_WORKSPACE }}
+          configuration_version: ${{ steps.apply-upload.outputs.configuration_version_id }}
 
-      - name: Terraform Apply
-        run: terraform apply -auto-approve
+      - name: Apply
+        uses: n920094/AWS_Terraform_CI_CD_demo/actions/apply-run@v1.0.0
+        if: fromJSON(steps.apply-run.outputs.payload).data.attributes.actions.IsConfirmable
+        id: apply
+        with:
+          run: ${{ steps.apply-run.outputs.run_id }}
+          comment: "Apply Run from GitHub Actions CI ${{ github.sha }}"
