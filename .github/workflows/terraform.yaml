@@ -8,17 +8,15 @@ on:
 env:
   TF_CLOUD_ORGANIZATION: "TED_EVAL"
   TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
-  TF_PROJECT: "Nakabayashi-Project"
   TF_WORKSPACE: "terraform-aws-cicd-demo"
   CONFIG_DIRECTORY: "./"
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
 jobs:
   terraform:
     name: "Terraform"
     runs-on: ubuntu-latest
-    env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     defaults:
       run:
         working-directory: src

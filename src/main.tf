@@ -2,7 +2,7 @@ terraform {
   cloud {
     organization = "TED_EVAL"
     workspaces {
-      project = "Nakabayashi-Project"
+      #project = "Nakabayashi-Project"
       name = "terraform-aws-cicd-demo"
     }
   }
