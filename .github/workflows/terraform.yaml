@@ -5,6 +5,13 @@ on:
     branches:
       - main
 
+env:
+  TF_CLOUD_ORGANIZATION: "TED_EVAL"
+  TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
+  TF_PROJECT: "Nakabayashi-Project"
+  TF_WORKSPACE: "terraform-aws-cicd-demo"
+  CONFIG_DIRECTORY: "./"
+
 jobs:
   terraform:
     name: "Terraform"
@@ -17,7 +24,7 @@ jobs:
         working-directory: src
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
