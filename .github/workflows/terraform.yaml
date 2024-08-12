@@ -13,7 +13,7 @@ env:
 
 jobs:
   terraform:
-    if: github.repository != 'n920094/AWS_Terraform_CI_CD_demo'
+   # if: github.repository != 'n920094/AWS_Terraform_CI_CD_demo'
     name: "Terraform Apply"
     runs-on: ubuntu-latest
     permissions:
